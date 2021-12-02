@@ -7,10 +7,19 @@ const generaterPdf = require('./generaterPdf.js');
 const downloadAudio = require('./downloadAudio.js');
 const downloadComment = require('./downloadComment.js');
 
+// 第一个参数是node，第二个参数是js名，从第三个参数开始才是真正用户传的参数
+var arguments = process.argv.splice(2);
 /**
  * 执行方法
  */
-(async function getColumnArticleList (firstArticalId){
+(async function getColumnArticleList (firstArticalId, incolumnName, infirstArticleId){
+
+	if(infirstArticleId != undefined && incolumnName != undefined && incolumnName != "") {
+		firstArticalId = infirstArticleId;
+	    config.columnName = incolumnName;
+	}
+	console.log('专栏名: ', config.columnName, '首篇Id: ', firstArticalId);
+	
     await utils.createDir(config.columnName);
     console.log('专栏文章链接开始获取');
     let columnArticleUrlList = [];
@@ -105,4 +114,4 @@ const downloadComment = require('./downloadComment.js');
     console.log('专栏文章链接获取完成');
     utils.writeToFile(`${config.columnName}`, JSON.stringify(columnArticleUrlList,null,4));
     return columnArticleUrlList;
-})(config.firstArticalId);
+})(config.firstArticalId, arguments[0], arguments[1]);
