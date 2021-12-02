@@ -41,6 +41,8 @@ module.exports = {
 1. `git clone git@github.com:jjeejj/geektime2pdf.git` 在本地克隆下来
 2. 然后执行 `npm i` 安装依赖
 3. 运行主程序 `node columnArticleList.js` 等待一段时间,生成 `PDF` 完成
+4.  `3.`中`node`命令可传递两个参数，专栏名和首篇id，会覆盖`config.js`中的`columnName`和`firstArticalId`。示例： `node columnArticleList.js 'Go 并发编程实战课' 294849` 。需要注意，两个参数中间要有空格，若专栏名有空格，请用英文单引号括起来。
+5. 有了`4.`的改进，不需要每次去修改`config.js`。`cookie`、`isComment`、`commentLimit`等比较固定的参数填一次即可，若`cookie`失效了，需要重新填写。
 
 > 这里可以先设置 `firstArticalId` 参数，获取整个专栏的内容；若中间有错误，不用管它，等运行完毕后，再设置 `articalIds` 参数，参数的值为上面获取失败的文章 `ID`，再次运行下载
 
