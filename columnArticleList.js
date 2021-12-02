@@ -11,7 +11,7 @@ const downloadComment = require('./downloadComment.js');
  * 执行方法
  */
 (async function getColumnArticleList (firstArticalId){
-    await utils.createDir('geektime_' + config.columnName);
+    await utils.createDir(config.columnName);
     console.log('专栏文章链接开始获取');
     let columnArticleUrlList = [];
     // 下载类型， 1: 指定文章ID进行下载， 0: 通过 firstArticalId进行下载
@@ -64,7 +64,7 @@ const downloadComment = require('./downloadComment.js');
             if (config.isComment) {
                 let {commentsTotal, commentsArr} = await downloadComment(
                     config.columnBaseUrl + articalId,
-                    articalId);
+                    articalId, config.commentLimit);
                 articleInfo.commentsTotal = commentsTotal;
                 articleInfo.commentsArr = commentsArr;
             };
@@ -73,14 +73,14 @@ const downloadComment = require('./downloadComment.js');
             //生成PDF 
             await generaterPdf(articleInfo,
                 useArticleTtle + '.pdf',
-                path.resolve(__dirname, 'geektime_' + config.columnName)
+                path.resolve(__dirname, config.columnName)
             );
             // 是否下载音频
             if (config.isdownloadVideo && columnArticle.audio_download_url) {
                 await downloadAudio(
                     columnArticle.audio_download_url,
                     useArticleTtle + '.mp3',
-                    path.resolve(__dirname, 'geektime_' + config.columnName)
+                    path.resolve(__dirname, config.columnName)
                 );
             };
 
@@ -103,6 +103,6 @@ const downloadComment = require('./downloadComment.js');
     };
     await getNextColumnArticleUrl();
     console.log('专栏文章链接获取完成');
-    utils.writeToFile(`geektime_${config.columnName}`, JSON.stringify(columnArticleUrlList,null,4));
+    utils.writeToFile(`${config.columnName}`, JSON.stringify(columnArticleUrlList,null,4));
     return columnArticleUrlList;
 })(config.firstArticalId);

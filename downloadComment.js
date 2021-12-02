@@ -8,10 +8,12 @@ const utils = require('./utils');
  * @param {String} 文章的链接地址
  * @param {Number} 文章的ID
  */
-async function downloadComments (url, articleId, prev = 0) {
+async function downloadComments (url, articleId, commentLimit, prev = 0) {
     console.log('开始获取 ', url, '评论');
     let commentsArr = [];
     let commentsTotal = 0;
+	let isFinished = false;
+	let downloadLen = 0;
     async function run (prev) {
         try {
             let res = await superagent.post(config.commentUrl)
@@ -31,8 +33,15 @@ async function downloadComments (url, articleId, prev = 0) {
             let resData = res.body.data
             commentsTotal = resData.page.count;
             let nextPage = resData.page.more;
-            commentsArr.push(...resData.list);
-            if (nextPage) {
+			if (commentLimit > (downloadLen + resData.list.length) || commentLimit < 0) {
+				commentsArr.push(...resData.list);
+				downloadLen = downloadLen + resData.list.length;
+			} else {
+				commentsArr.push(...resData.list.slice(0, (commentLimit - downloadLen)));
+				downloadLen = commentLimit;
+				isFinished = true;
+			}
+            if (nextPage && !isFinished) {
                 prev = resData.list[resData.list.length -1].score;
                 await utils.sleep(1);
                 await run(prev);
@@ -44,8 +53,8 @@ async function downloadComments (url, articleId, prev = 0) {
     await run(prev);
     // console.log('commentsArr', commentsArr);
     // console.log('commentsTotal', commentsTotal);
-    console.log('结束获取 ', url, '评论 总评论数为', commentsTotal);
-    return {commentsArr, commentsTotal};
+    console.log('结束获取:', url, '评论 总评论数为:', commentsTotal, "限制评论数:", commentLimit, "实下载评论数:", downloadLen);
+    return {commentsArr, downloadLen};
 };
 
 // downloadComments('https://time.geekbang.org/column/article/82337',82337);

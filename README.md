@@ -16,11 +16,12 @@ module.exports = {
     url: 'https://time.geekbang.org/serv/v1/article', // 该配置项不需要改动
     commentUrl: 'https://time.geekbang.org/serv/v1/comments', // 该配置项不需要改动
     columnBaseUrl: 'https://time.geekbang.org/column/article/', // 该配置项不需要改动
-    columnName: '玩转VScode', // 专栏名称
+    columnName: '玩转VScode', // 专栏名称，去掉了geektime_ 前缀
     firstArticalId: 18053, //专栏第一篇文章的ID
     articalIds: [201700,202772,204472,205784],  //指定下载的articalId, 优先级更高, 配置后firstArticalId配置将失效
     isdownloadVideo: false, // 是否下载音频
     isComment: false, // 是否导出评论
+    commentLimit: 10, // 【新增】限制下载评论条数-1无限制0等同isComment=false
     cookie: 'cookie'
 };
 ```
